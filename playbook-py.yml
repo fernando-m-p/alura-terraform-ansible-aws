@@ -1,0 +1,24 @@
+- hosts: fermope-python
+  tasks: 
+  - name: Instalando python3 e virtualenv
+    apt:
+      pkg:
+      - python3
+      - virtualenv
+      update_cache: yes
+    become: yes
+  - name: Instalando Django e Django Rest
+    pip:
+      virtualenv: /home/ubuntu/fermope/venv
+      name: 
+        - django
+        - djangorestframework
+  - name: iniciando projeto DJango
+    shell: '. /home/ubuntu/fermope/venv/bin/activate; django-admin startproject setup /home/ubuntu/fermope'
+    ignore_errors: yes
+  - name: Alterando o hosts do settings
+    lineinfile:
+      path: /home/ubuntu/fermope/setup/settings.py
+      regexp: 'ALLOWED_HOSTS'
+      line: 'ALLOWED_HOSTS = ["*"]'
+      backrefs: yes
